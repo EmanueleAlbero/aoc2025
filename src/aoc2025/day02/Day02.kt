@@ -4,7 +4,13 @@ import common.benchmarkTime
 import common.println
 import common.readInput
 
+var pow10 = LongArray(12)
+
 fun main() {
+    pow10[0] = 1L
+    for (i in 1..11) {
+        pow10[i] = pow10[i - 1] * 10L
+    }
 
     fun part1(input: List<String>): Long {
         val ranges = getRanges(input)
@@ -16,7 +22,7 @@ fun main() {
     fun part2(input: List<String>): Long {
         val ranges = getRanges(input)
         return ranges.sumOf { range ->
-            sumFakeIdsInRange(range, ::isPeriodic)
+            sumFakeIdsInRange(range, ::isPeriodicMod)
         }
     }
 
@@ -80,17 +86,12 @@ fun isPeriodic(value: String): Boolean {
     return false
 }
 
+
 fun isPeriodicMod(value: String): Boolean {
     val n = value.toLong()
     val len = value.length
 
-    val pow10 = LongArray(len + 1)
-    pow10[0] = 1L
-    for (i in 1..len) {
-        pow10[i] = pow10[i - 1] * 10L
-    }
-
-    for (d in 1..len / 2) {
+    for (d in len / 2 downTo 1) {
         if (len % d != 0) continue
         val k = len / d
 
