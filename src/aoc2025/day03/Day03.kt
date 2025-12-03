@@ -7,19 +7,13 @@ import common.readInput
 fun main() {
 
     fun part1(input: List<String>): Long {
-        val banks = input.map {
-            it.toCharArray()
-        }
-        return banks.sumOf { bank->
+        return input.sumOf { bank->
             bank.getHighestJolt(2)
         }
     }
 
     fun part2(input: List<String>): Long {
-        val banks = input.map {
-            it.toCharArray()
-        }
-        return banks.sumOf { bank->
+        return input.sumOf { bank->
             bank.getHighestJolt(12)
         }
     }
@@ -44,36 +38,26 @@ fun main() {
     }
 }
 
-private fun CharArray.getHighestJolt(batteryCount: Int): Long {
-    val selectedValues = StringBuilder()
+private fun String.getHighestJolt(batteryCount: Int): Long {
+    val selectedValues = StringBuilder(batteryCount)
     var startPosition = 0
 
-    while (selectedValues.length < batteryCount) {
+    repeat(batteryCount) {
         val remainingBatteries = batteryCount - selectedValues.length
-        val maxPosition = this.size - remainingBatteries
+        val maxPosition = this.length - remainingBatteries
 
         var foundPosition = -1
         for (value in '9' downTo '1') {
-            foundPosition = this.isThereAValueInRangePosition(value, startPosition, maxPosition)
-            if (foundPosition >= 0) {
-                selectedValues.append(value.toString())
+            foundPosition = this.indexOf(value, startPosition)
+            if (foundPosition in startPosition..maxPosition) {
+                selectedValues.append(value)
                 startPosition = foundPosition + 1
                 break
             }
         }
 
-        if (foundPosition < 0) {
-            break
-        }
+        if (foundPosition < 0) return selectedValues.toString().toLongOrNull() ?: 0L
     }
 
     return selectedValues.toString().toLong()
-}
-
-private fun CharArray.isThereAValueInRangePosition(value: Char, startPosition: Int, stopPosition: Int): Int {
-    if (startPosition > stopPosition) return -1
-    for (i in startPosition..stopPosition) {
-        if (this[i] == value) return i
-    }
-    return -1
 }
